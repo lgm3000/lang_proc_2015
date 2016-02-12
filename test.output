@@ -1,0 +1,83 @@
+int       Keyword        int       10   test2.c     int main()
+main      Identifier     main      10   test2.c     int main()
+(         Operator       (         10   test2.c     int main()
+)         Operator       )         10   test2.c     int main()
+{         Operator       {         11   test2.c     {
+int       Keyword        int       12   test2.c      int n,a,s,2jsdkv;
+n         Identifier     n         12   test2.c      int n,a,s,2jsdkv;
+,         Operator       ,         12   test2.c      int n,a,s,2jsdkv;
+a         Identifier     a         12   test2.c      int n,a,s,2jsdkv;
+,         Operator       ,         12   test2.c      int n,a,s,2jsdkv;
+s         Identifier     s         12   test2.c      int n,a,s,2jsdkv;
+,         Operator       ,         12   test2.c      int n,a,s,2jsdkv;
+2jsdkv    Invalid        2jsdkv    12   test2.c      int n,a,s,2jsdkv;
+;         Operator       ;         12   test2.c      int n,a,s,2jsdkv;
+scanf     Identifier     scanf     13   test2.c      scanf("%d",&n);
+(         Operator       (         13   test2.c      scanf("%d",&n);
+"%d"      StringLiteral  "%d"      13   test2.c      scanf("%d",&n);
+,         Operator       ,         13   test2.c      scanf("%d",&n);
+&         Operator       &         13   test2.c      scanf("%d",&n);
+n         Identifier     n         13   test2.c      scanf("%d",&n);
+)         Operator       )         13   test2.c      scanf("%d",&n);
+;         Operator       ;         13   test2.c      scanf("%d",&n);
+for       Keyword        for       14   test2.c      for(i=0;i<n;i++)
+(         Operator       (         14   test2.c      for(i=0;i<n;i++)
+i         Identifier     i         14   test2.c      for(i=0;i<n;i++)
+=         Operator       =         14   test2.c      for(i=0;i<n;i++)
+0         Constant       0         14   test2.c      for(i=0;i<n;i++)
+;         Operator       ;         14   test2.c      for(i=0;i<n;i++)
+i         Identifier     i         14   test2.c      for(i=0;i<n;i++)
+<         Operator       <         14   test2.c      for(i=0;i<n;i++)
+n         Identifier     n         14   test2.c      for(i=0;i<n;i++)
+;         Operator       ;         14   test2.c      for(i=0;i<n;i++)
+i         Identifier     i         14   test2.c      for(i=0;i<n;i++)
+++        Operator       ++        14   test2.c      for(i=0;i<n;i++)
+)         Operator       )         14   test2.c      for(i=0;i<n;i++)
+{         Operator       {         15   test2.c      {
+scanf     Identifier     scanf     16   test2.c       scanf("%d",&a);
+(         Operator       (         16   test2.c       scanf("%d",&a);
+"%d"      StringLiteral  "%d"      16   test2.c       scanf("%d",&a);
+,         Operator       ,         16   test2.c       scanf("%d",&a);
+&         Operator       &         16   test2.c       scanf("%d",&a);
+a         Identifier     a         16   test2.c       scanf("%d",&a);
+)         Operator       )         16   test2.c       scanf("%d",&a);
+;         Operator       ;         16   test2.c       scanf("%d",&a);
+s         Identifier     s         17   test2.c       s+=a;
++=        Operator       +=        17   test2.c       s+=a;
+a         Identifier     a         17   test2.c       s+=a;
+;         Operator       ;         17   test2.c       s+=a;
+}         Operator       }         18   test2.c      }
+s         Identifier     s         19   test2.c      s /= n;
+/=        Operator       /=        19   test2.c      s /= n;
+n         Identifier     n         19   test2.c      s /= n;
+;         Operator       ;         19   test2.c      s /= n;
+i         Identifier     i         20   test2.c      i = 124.645;
+=         Operator       =         20   test2.c      i = 124.645;
+124.645   Constant       124.645   20   test2.c      i = 124.645;
+;         Operator       ;         20   test2.c      i = 124.645;
+if        Keyword        if        21   test2.c      if(s==5||s<<==45)
+(         Operator       (         21   test2.c      if(s==5||s<<==45)
+s         Identifier     s         21   test2.c      if(s==5||s<<==45)
+==        Operator       ==        21   test2.c      if(s==5||s<<==45)
+5         Constant       5         21   test2.c      if(s==5||s<<==45)
+||        Operator       ||        21   test2.c      if(s==5||s<<==45)
+s         Identifier     s         21   test2.c      if(s==5||s<<==45)
+<<==      Invalid        <<==      21   test2.c      if(s==5||s<<==45)
+45        Constant       45        21   test2.c      if(s==5||s<<==45)
+)         Operator       )         21   test2.c      if(s==5||s<<==45)
+printf    Identifier     printf    22   test2.c       printf("%d",s);
+(         Operator       (         22   test2.c       printf("%d",s);
+"%d"      StringLiteral  "%d"      22   test2.c       printf("%d",s);
+,         Operator       ,         22   test2.c       printf("%d",s);
+s         Identifier     s         22   test2.c       printf("%d",s);
+)         Operator       )         22   test2.c       printf("%d",s);
+;         Operator       ;         22   test2.c       printf("%d",s);
+else      Keyword        else      23   test2.c      else
+s         Identifier     s         24   test2.c       s>>=7;
+>>=       Operator       >>=       24   test2.c       s>>=7;
+7         Constant       7         24   test2.c       s>>=7;
+;         Operator       ;         24   test2.c       s>>=7;
+return    Keyword        return    25   test2.c      return 0;
+0         Constant       0         25   test2.c      return 0;
+;         Operator       ;         25   test2.c      return 0;
+}         Operator       }         26   test2.c     }
