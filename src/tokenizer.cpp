@@ -14,6 +14,7 @@ yw11614 Imperial College
 using namespace std;
 
 static map<string,string> tk;
+static string file_n;
 static char punct[]={'+','-','*','/','&','|','!','=','<','>'};
 static char punct_[]={'^','~','.',';',':',','};
 
@@ -24,6 +25,7 @@ public:
 	const string token(const int& i);
 	const string _wholeline();
 	const int is_empty();
+	const string filename();
 private:
 	const int islet(const char& c);
 	const int isnum(const char& c);
@@ -34,6 +36,7 @@ private:
 	const int isstr(const char& c);
 	vector<string> tok;
 	string whole_line;
+	string file;
 	
 };
 
@@ -52,11 +55,8 @@ int main()
 	load_token_data();
 
 	//stripping out filename from first line
-	string tmpln,filename;
+	string tmpln;
 	vector<_cline> line;
-	cin >> tmpln >> tmpln >> filename;
-	filename = filename.substr(1,filename.size()-2);
-
 	//input file into vector line
 	getline(cin,tmpln);
 	int i=0;
@@ -79,7 +79,7 @@ int main()
 				cout.width(15);cout << left << tk[line[i].token(j)];
 				cout.width(10);cout << left << line[i].token(j);
 				cout.width(5);cout << left << i+1;
-				cout.width(12);cout << left << filename;
+				cout.width(12);cout << left << line[i].filename();
 				cout << line[i]._wholeline() << endl;
 			}
 	}
@@ -124,6 +124,7 @@ void load_token_data(){
 //constructor: a lexer that takes in line as string and generates a vector containing all tokens identified
 _cline::_cline(string ln): whole_line(ln)
 {
+	file = file_n;
 	int i=0,j=1;
 	while(j<=ln.size())
 	{
@@ -190,6 +191,16 @@ _cline::_cline(string ln): whole_line(ln)
 		else
 		if(ln[i]=='#')
 		{
+			if(i==0 && isnum(ln[2]) && isnum(ln[ln.size()-1]){
+				j = 5;
+				while(ln[j]!=' ')j++;
+				j++;
+				while(j<=ln.size()){
+					if(ln[j]=='1'||ln[j]=='2') file_n = ln.substr(5,j-6);
+					j+=2;
+				}
+				
+			}
 			j+=ln.size();
 		}
 		else
@@ -255,4 +266,8 @@ const string _cline::token(const int& i){
 //literally returning the whole line :)
 const string _cline::_wholeline(){
 	return whole_line;
+}
+//returning filename
+const string _cline::filename(){
+	return file;
 }
