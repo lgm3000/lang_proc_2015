@@ -1,81 +1,80 @@
-auto
-break
-case
-char
-const
-continue
-default
-do
-double
-else
-enum
-extern
-float
-for
-goto
-if
-int
-long
-register
-return
-short
-signed
-sizeof
-static
-struct
-switch
-typedef
-union
-unsigned
-void
-volatile
-while
-{
-}
-[]
-[
-]
-(
-)
-.
-->
-++
---
-&
-*
-+
--
-~
-!
-sizeof
-/
-%
-<<
->>
-<
->
-<=
->=
-==
-!=
-^
-|
-&&
-||
-=
-*=
-/=
-%=
-+=
--=
-<<=
->>=
-&=
-^=
-|=
-,
-#
-##
-;
-:
-"
+auto	AUTO
+break	BREAK
+case	CASE
+char	CHAR
+const	CONST
+continue	CONTINUE
+default	DEFAULT
+do	DO
+double	DOUBLE
+else	ELSE
+enum	ENUM
+extern	EXTERN
+float	FLOAT
+for	FOR
+goto	GOTO
+if	IF
+int	INT
+long	LONG
+register	REGISTER
+return	RETURN
+short	SHORT
+signed	SIGNED
+sizeof	SIZEOF
+static	STATIC
+struct	STRUCT
+switch	SWITCH
+typedef	TYPEDEF
+union	UNION
+unsigned	UNSIGNED
+void	VOID
+volatile	VOLATILE
+while	WHILE
+{	L_LP
+}	L_RP
+[]	INDEX
+[	M_LP
+]	M_RP
+(	S_LP
+)	S_RP
+.	DOT
+->	POINTER
+++	PLUSPLUS
+--	MINUSMINUS
+&	BITWISEAND
+*	ASTERIX
++	PLUS
+-	MINUS
+~	BITWISENOT
+!	NOT
+sizeof	SIZEOF
+/	DIV
+%	MOD
+<<	BITWISESHIFTLEFT
+>>	BITWISESHIFTRIGHT
+<	LESSER
+>	GREATER
+<=	LESSOREQUAL
+>=	GREATOREQUAL
+==	EQUAL
+!=	NOTEQUAL
+^	BITWISEXOR
+|	BITWISEOR
+&&	AND
+||	OR
+=	ASSIGN
+*=	MULTEQUAL
+/=	DIVEQUAL
+%=	MODEQUAL
++=	PLUSEQUAL
+-=	MINUSEQUAL
+<<=	BSLEQUAL
+>>=	BSREQUAL
+&=	BANDEQUAL
+^=	BXOREQUAL
+|=	BOREQUAL
+,	COMMA
+#	#
+##	##
+;	EOL
+:	COLON
