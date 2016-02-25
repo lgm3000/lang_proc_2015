@@ -14,6 +14,7 @@ yw11614 Imperial College
 using namespace std;
 
 static map<string,string> tk;
+static map<string,string> tkclass;
 static string file_n;
 static char punct[]={'+','-','*','/','&','|','!','=','<','>'};
 static char punct_[]={'^','~','.',';',':',','};
@@ -34,13 +35,15 @@ private:
 	const int is_punct_(const char& c);
 	const int isbracket(const char& c);
 	const int isstr(const char& c);
+	const int ischar(const char& c);
+	const int isbkslash(const char& c);
 	vector<string> tok;
 	string whole_line;
 	string file;
 	
 };
 
-void existinmap(const string& str,const string& type);
+void existinmap(const string& str,const string& tclass,const string& type);
 //string removespaces(string input);
 void load_token_data();
 
@@ -76,11 +79,12 @@ int main()
 			for(int j=0;j<line[i].tok_num();j++)
 			{
 				cout.width(10);cout << left << line[i].token(j);
-				cout.width(15);cout << left << tk[line[i].token(j)];
-				cout.width(10);cout << left << line[i].token(j);
+				cout.width(15);cout << left << tkclass[line[i].token(j)];
+				cout.width(20);cout << left << tk[line[i].token(j)];
 				cout.width(5);cout << left << i+1;
-				cout.width(12);cout << left << line[i].filename();
-				cout << line[i]._wholeline() << endl;
+				/*cout.width(12);cout << left << line[i].filename();
+				cout << line[i]._wholeline() << endl;*/
+				cout << endl;
 			}
 	}
 
@@ -101,9 +105,12 @@ string removeSpaces(string input)
 // checks whether the token inputed is existent or not: if not, check its class: identifier, constant or stringliteral 
 // (or invalid:P)
 
-void existinmap(const string& str,const string& type){
+void existinmap(const string& str,const string& tclass,const string& type){
 	map<string,string>::iterator it = tk.find(str);
-	if(it == tk.end()) tk[str] = type;
+	if(it == tk.end()){
+		tkclass[str] = tclass;
+		tk[str]      = type;		
+		}
 }
 
 
@@ -115,9 +122,9 @@ void load_token_data(){
 		cout << "Failed to load default tokens";
 		exit(EXIT_FAILURE);
 	}
-	string tmp;
-	for(int i=0;i<32;i++){fin >> tmp; tk[tmp] = "Keyword";}
-	for(int i=32;i<81;i++){fin >> tmp; tk[tmp] = "Operator";}
+	string tmp,tmptype;
+	for(int i=0;i<32;i++){fin >> tmp >> tmptype; tk[tmp] = tmptype; tkclass[tmp] = "Keyword";}
+	for(int i=32;i<80;i++){fin >> tmp >> tmptype; tk[tmp] = tmptype; tkclass[tmp] = "Operator";}
 
 }
 
@@ -132,7 +139,7 @@ _cline::_cline(string ln): whole_line(ln)
 		{
 			while((isnum(ln[j])||islet(ln[j])||is_(ln[j]))&&j<ln.size())j++;
 			tok.push_back(ln.substr(i,j-i));
-			existinmap(ln.substr(i,j-i),"Identifier");
+			existinmap(ln.substr(i,j-i),"Identifier","IDENTIFIER");
 			i=j++;			
 		}
 		else
@@ -148,49 +155,69 @@ _cline::_cline(string ln): whole_line(ln)
 			{
 				while((isnum(ln[j])||islet(ln[j])||is_(ln[j]))&&j<ln.size())j++;
 				tok.push_back(ln.substr(i,j-i));
-				existinmap(ln.substr(i,j-i),"Invalid");
+				existinmap(ln.substr(i,j-i),"Invalid","Invalid");
 				i=j++;		
 			}
 			else
 			{
 				tok.push_back(ln.substr(i,j-i));
-				existinmap(ln.substr(i,j-i),"Constant");
+				existinmap(ln.substr(i,j-i),"Constant","NUMERICALCONSTANT");
 				i=j++;
 			}
 		}
 		else
 		if(is_punct_(ln[i]))
 		{
-			tok.push_back(ln.substr(i,j-i));
-			i=j++;			
+			if(ln[i] == '/' && ln[i+1] == '/') j+=ln.size();
+			else{		
+				tok.push_back(ln.substr(i,1));
+				i=j++;			
+			}
 		}
 		else
 		if(is_punct(ln[i]))
 		{
 			while(is_punct(ln[j])&&j<ln.size())j++;
 			tok.push_back(ln.substr(i,j-i));
-			existinmap(ln.substr(i,j-i),"Invalid");
-			i=j++;			
+			existinmap(ln.substr(i,j-i),"Invalid","Invalid");
+			i=j++;
 		}
 		else
 			//more modifications should be done here, mb implementing bracket checks or sth
 		if(isbracket(ln[i]))
 		{
-			tok.push_back(ln.substr(i,j-i));
-			i=j++;			
+			tok.push_back(ln.substr(i,1));		
+			i = j++;		
 		}
 		else
 		if(isstr(ln[i]))
 		{
 			while((!isstr(ln[j]))&&j<ln.size())j++;
+			if(j<ln.size())j++;
+			tok.push_back(ln.substr(i,j-i));
+			existinmap(ln.substr(i,j-i),"StringLiteral","STRINGLITERAL");
+			i=j++;			
+		}
+		else
+		if(ischar(ln[i]))
+		{
+			while((!ischar(ln[j]))&&j<ln.size())j++;
 			j++;
 			tok.push_back(ln.substr(i,j-i));
-			existinmap(ln.substr(i,j-i),"StringLiteral");
+			existinmap(ln.substr(i,j-i),"Constant","CHARACTERCONSTANT");
+			i=j++;			
+		}
+		else
+		if(isbkslash(ln[i]))
+		{
+			tok.push_back(ln.substr(j,1));
+			existinmap(ln.substr(j,1),"Constant","CHARACTERCONSTANT");
+			i=j++;
 			i=j++;			
 		}
 		else
 		if(ln[i]=='#')
-		{
+		{/*
 			if(i==0 && isnum(ln[2]) && isnum(ln[ln.size()-1]){
 				j = 5;
 				while(ln[j]!=' ')j++;
@@ -200,7 +227,7 @@ _cline::_cline(string ln): whole_line(ln)
 					j+=2;
 				}
 				
-			}
+			}*/
 			j+=ln.size();
 		}
 		else
@@ -246,6 +273,18 @@ const int _cline::isbracket(const char& c){
 }
 const int _cline::isstr(const char& c){
 	if (c == '"')
+		return 1;
+	else
+		return 0;
+}
+const int _cline::ischar(const char& c){
+	if (c == '\'')
+		return 1;
+	else
+		return 0;
+}
+const int _cline::isbkslash(const char& c){
+	if (c == '\\')
 		return 1;
 	else
 		return 0;
