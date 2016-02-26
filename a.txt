@@ -1,0 +1,8 @@
+int main()
+{
+	int humpty,dumpty,sat,on,a,wall;
+	while(asndgiu) {int humpty,dumpty,had,a,great,fall;}
+	if(asdfasdf) int couldnt,put,humpty,together,again;
+	else int and,all,the,kings,horses,and,all,the,kings,"men";
+	return humpty+dumpty;
+}

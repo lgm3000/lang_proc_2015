@@ -1,0 +1,30 @@
+FUNCTION : main
+SCOPE
+    VARIABLE : humpty
+    VARIABLE : dumpty
+    VARIABLE : sat
+    VARIABLE : on
+    VARIABLE : a
+    VARIABLE : wall
+    SCOPE
+        VARIABLE : humpty
+        VARIABLE : dumpty
+        VARIABLE : had
+        VARIABLE : a
+        VARIABLE : great
+        VARIABLE : fall
+    VARIABLE : couldnt
+    VARIABLE : put
+    VARIABLE : humpty
+    VARIABLE : together
+    VARIABLE : again
+    VARIABLE : and
+    VARIABLE : all
+    VARIABLE : the
+    VARIABLE : kings
+    VARIABLE : horses
+    VARIABLE : and
+    VARIABLE : all
+    VARIABLE : the
+    VARIABLE : kings
+    VARIABLE : men
