@@ -8,43 +8,42 @@
 
 DIGIT			[0-9]
 LETTER			[a-zA-Z_]
-H			[a-fA-F0-9]
 
 
 %%
-
+["][^"]["]	{return(STRINGLITERAL);}
 "auto"		{return(AUTO);}
 "break"		{return(BREAK);}
 "case"		{return(CASE);}
 "char"		{return(CHAR);}
 "const"		{return(CONST);}
-"continue"		{return(CONTINUE);}
-"default"		{return(DEFAULT);}
+"continue"	{return(CONTINUE);}
+"default"	{return(DEFAULT);}
 "do"		{return(DO);}
-"double"		{return(DOUBLE);}
+"double"	{return(DOUBLE);}
 "else"		{return(ELSE);}
 "enum"		{return(ENUM);}
-"extern"		{return(EXTERN);}
+"extern"	{return(EXTERN);}
 "float"		{return(FLOAT);}
 "for"		{return(FOR);}
 "goto"		{return(GOTO);}
 "if"		{return(IF);}
 "int"		{return(INT);}
 "long"		{return(LONG);}
-"register"		{return(REGISTER);}
-"return"		{return(RETURN);}
+"register"	{return(REGISTER);}
+"return"	{return(RETURN);}
 "short"		{return(SHORT);}
-"signed"		{return(SIGNED);}
-"static"		{return(STATIC);}
-"struct"		{return(STRUCT);}
-"switch"		{return(SWITCH);}
-"typedef"		{return(TYPEDEF);}
+"signed"	{return(SIGNED);}
+"static"	{return(STATIC);}
+"struct"	{return(STRUCT);}
+"switch"	{return(SWITCH);}
+"typedef"	{return(TYPEDEF);}
 "union"		{return(UNION);}
-"unsigned"		{return(UNSIGNED);}
+"unsigned"	{return(UNSIGNED);}
 "void"		{return(VOID);}
-"volatile"		{return(VOLATILE);}
+"volatile"	{return(VOLATILE);}
 "while"		{return(WHILE);}
-"sizeof"		{return(SIZEOF);}
+"sizeof"	{return(SIZEOF);}
 
 "{"		{return('{');}
 "}"		{return('}');}
