@@ -44,7 +44,8 @@ LETTER			[a-zA-Z_]
 "volatile"	{return(VOLATILE);}
 "while"		{return(WHILE);}
 "sizeof"	{return(SIZEOF);}
-
+"#".*		{}
+"//".*  {}
 "{"		{return('{');}
 "}"		{return('}');}
 "[]"		{return(INDEX);}
@@ -76,7 +77,6 @@ LETTER			[a-zA-Z_]
 "^="		{return(BXOREQUAL);}
 "|="		{return(BOREQUAL);}
 ","		{return(',');}
-"#"		{return('#');}
 ";"		{return(EOL);}
 ":"		{return(':');}
 "&"		{return('&');}
