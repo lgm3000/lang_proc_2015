@@ -3,6 +3,7 @@ yw11614 Imperial College
 2016-feb-12
 	tokenizer not based on flex
 */
+/*
 #include<iostream>
 #include<fstream>
 #include<map>
@@ -82,8 +83,8 @@ int main()
 				cout.width(15);cout << left << tkclass[line[i].token(j)];
 				cout.width(20);cout << left << tk[line[i].token(j)];
 				cout.width(5);cout << left << i+1;
-				/*cout.width(12);cout << left << line[i].filename();
-				cout << line[i]._wholeline() << endl;*/
+				cout.width(12);cout << left << line[i].filename();
+				cout << line[i]._wholeline() << endl;
 				cout << endl;
 			}
 	}
@@ -94,13 +95,6 @@ int main()
 
 
 //removes spaces fom input;
-/*
-string removeSpaces(string input)
-{
-  input.erase(remove(input.begin(),input.end(),' '),input.end());
-  return input;
-}
-*/
 
 // checks whether the token inputed is existent or not: if not, check its class: identifier, constant or stringliteral 
 // (or invalid:P)
@@ -227,7 +221,7 @@ _cline::_cline(string ln): whole_line(ln)
 					j+=2;
 				}
 				
-			}*/
+			}*//*
 			j+=ln.size();
 		}
 		else
