@@ -1,108 +1,100 @@
-%code requires{
-#include <stdio.h>
+/*
+
+
+Lite Version of Bison Parser: Specified for assessment2
+Imperial College
+Yiming Wang
+
+*/
+%{
 #include <iostream>
-
-
-
-int yylex(void);
-void yyerror(const char *);
-struct strc{
-	char *deal_str;
-	struct strc *next;
-};
-}
-
-
-%union{
-int number;
-char *str;
-struct strc *node;
-
-}
-
-%token COMMA LCURLY RCURLY SEMICN  EQUOP LBKT RBKT
-
-%token <str> STRING
-%token <str> ID
-%token <str> RETURN
-%token <str> IF
-%token <str> WHILE
-%token <str> ELSE
-%token <str> FOR
-%token <str> ADDOP
-%token <str> MUNISOP
-%token <str> MULTIOP
-%token <str> DIVOP
-%token <str> DEQUOP
-%token <str> GT
-%token <str> LT
-%token <str> GE
-%token <str> LE
-%token <str> DATA_TYPE
-%token <str> ANY_STRING
-%token <str> SCO
-%token <number> NUM
-%type <str> PARA_list
-%type <str> STATEMENT_list
-%type <str> ARITHMETIC
-%type <str> FUN_BODY
-%type <str> FUN_BODY_LIST
-%type <str> CONDITION
-%type <str> EXPR
-%type <str> FACTOR
-%type <node> FUN START
-%start START
-
-%{struct strc *root=0;
+#include <cstdlib>
+#include <sstream>
+using namespace std;
+int yylex();
+int yyerror(const char* s);
+int scope = 0;
+string spaces(int num);
 %}
+ 
+%union{
+	char*	name;
+}
 
+
+%token AUTO BREAK CASE CHAR CONST CONTINUE DEFAULT DO DOUBLE ELSE ENUM EXTERN FLOAT FOR GOTO IF INT LONG REGISTER RETURN SHORT SIGNED STATIC STRUCT SWITCH TYPEDEF UNION UNSIGNED VOID VOLATILE WHILE SIZEOF INDEX POINTER PLUSPLUS MINUSMINUS BITWISESHIFTLEFT BITWISESHIFTRIGHT LESSOREQUAL GREATOREQUAL EQUAL NOTEQUAL AND OR MULTEQUAL DIVEQUAL MODEQUAL PLUSEQUAL MINUSEQUAL BSLEQUAL BSREQUAL BANDEQUAL BXOREQUAL BOREQUAL JINGJING EOL
+%token IDENTIFIER CONSTANT STRINGLITERAL
+%type<name> IDENTIFIER id variable	
+%start program
 %%
-START : FUN {root=$1;};
+program		: program dio{}|
+		dio{}
+		;
+dio		:function|line;
 
-FUN : DATA_TYPE STRING LBKT RBKT LCURLY RCURLY { std::cout <<"FUNCTION : "<<$2<<std::endl;}
-    | DATA_TYPE STRING {std::cout <<"SCOPE\n"<<"    VARIABLE : "<<$2<<std::endl;}
-    | DATA_TYPE STRING LBKT PARA_list RBKT LCURLY FUN_BODY_LIST RCURLY{ std::cout <<"FUNCTION : "<<$2<<"\n"<<std::endl; root = $7; $$->next =$7;};
+function	: func_def'{' code '}'{scope--;}
+		; 
+func_def	: type id '(' parameter_list ')'{scope--;cout << spaces(scope) << "SCOPE" << endl;scope++;}
+		;
+parameter_list	:parameter_sub|
+		;
+parameter_sub	: parameter_sub ',' type IDENTIFIER{cout << spaces(scope) <<"PARAMETER : "<< $4 << endl;}|
+		type IDENTIFIER {cout << spaces(scope) <<"PARAMETER : "<< $2 << endl;}
+		;
+type		: INT | VOID;
 
-PARA_list : PARA_list COMMA DATA_TYPE STRING 
-          | DATA_TYPE STRING {std::cout<<"    PARAMETER : "<<$2<<std::endl; };
+line		: var|expr EOL|flow|consumable;
 
-FUN_BODY_LIST: FUN_BODY_LIST FUN_BODY {$1 ->next($2); $$=$1;}
-|FUN_BODY {$$->next($1);};
+code		: line code|
+		line|
+		;
+flow		: f_if'('expr')' inner after{scope--;}|
+		f_do inner WHILE '('expr')' EOL{scope--;}|
+		f_c inner{scope--;}
+		;
 
-FUN_BODY :  IF LBKT CONDITION RBKT LCURLY STATEMENT_list RCURLY{if($3 == 1){$$->next == $6;};}
-| ELSE LCURLY STATEMENT_list RCURLY{$$->next($3);}
-| WHILE LBKT CONDITION RBKT LCURLY STATEMENT_list RCURLY{if($3 == 1){$$->next == $6;};}
-| FOR LBKT CONDITION RBKT LCURLY STATEMENT_list RCURLY {if($3 == 1){$$->next == $6;};}
-| STATEMENT_list {$$ = $1;}
-;
+f_c		:f_for'('expr ',' expr ',' expr')'|
+		f_while'('expr')'
+		;
+f_for		: FOR	;
+f_if		: IF	;
+f_else		: ELSE ;
+f_do		: DO	;
+f_while		: WHILE	;
+after		: f_else inner|;
 
-
-CONDITION: ID DEQUOP EXPR {if($1==$3){return 1}; else {return false;} ;}
-| ID GT EXPR {if($1>$3){return 1;} else {return 0;};}
-| ID LT EXPR {if($1<$3){return 1;} else {return 0;};}
-| ID GE EXPR {if($1>=$3){return 1;} else {return 0;}; }
-| ID LE EXPR {if($1<=$3){return 1;} else {return 0;}; }
-;
-
-STATEMENT_list : STATEMENT_list ARITHMETIC {$1->next($2); $$ = $1; }
-| ARITHMETIC {$$->next($1);}
-
-
-ARITHMETIC: DATA_TYPE STRING SEMICN  {std::cout <<"SCOPE\n"<<"    VARIABLE : "<<$2<<std::endl;}
-| DATA_TYPE STRING EQUOP EXPR SEMICN { std::cout <<"SCOPE\n"<<"    VARIABLE : "<<$2<<std::endl;$$->next($4); }
-| RETURN STRING
-;
-
-EXPR: EXPR ADDOP EXPR { $$ = $1 +$3;}
-| EXPR MUNISOP EXPR { $$ = $1 - $3;}
-| EXPR MULTIOP EXPR { $$ = $1 * $3;}
-| EXPR DIVOP EXPR { $$ = $1 / $3;}
-| FACTOR {$$->next($1);}
-;
-
-FACTOR: LBKT EXPR RBKT { $$->next = $2; }
-| NUM { $$ =$1;}
-| STRING {$$ =$1; }
-;
-
+inner		:scoping code '}'|
+		line;
+// For printing out the SCOPE
+scoping		:'{'{cout << spaces(scope) << "SCOPE" << endl;scope++;};
+var		: type variable_list EOL 
+		;
+variable_list	: variable_list ',' variable {cout <<spaces(scope)<<"VARIABLE : "<< $3 << endl;}|
+		variable {cout <<spaces(scope)<<"VARIABLE : "<< $1 << endl;}
+		;
+variable	: IDENTIFIER '=' expr{$$ = $1;}|IDENTIFIER{$$ = $1;}
+		;
+expr		:term oper expr|
+		term|
+		;
+term		:IDENTIFIER|CONSTANT|STRINGLITERAL;
+oper		:SIZEOF|PLUSPLUS|MINUSMINUS|'&'|'*'|'+'|'-'|'~'|'!'|'/'|'%'|BITWISESHIFTLEFT|BITWISESHIFTRIGHT|'<'|'>'|LESSOREQUAL|GREATOREQUAL|EQUAL|NOTEQUAL|'^'|'|'|AND|OR|'='|MULTEQUAL|DIVEQUAL|MODEQUAL|PLUSEQUAL|MINUSEQUAL|BSLEQUAL|BSREQUAL|BANDEQUAL|BXOREQUAL|BOREQUAL
+		;
+id		: IDENTIFIER{cout << "FUNCTION : " << $1 << endl;scope++;}
+		;
+consumable	: RETURN expr EOL;
 %%
+string spaces(int num){
+	stringstream ss;
+	for(int i=0;i<num*4;i++) ss<< " ";	
+	return ss.str();
+}
+
+int yyerror(const char* s){
+	cout << "Error: " << s;
+    return 0;
+}
+int main(void) {
+	yyparse();
+	return 0;
+}
