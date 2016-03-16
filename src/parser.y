@@ -21,7 +21,7 @@ string spaces(int num);
 %token IDENTIFIER CONSTANT STRINGLITERAL
 %type<name> INT VOID '='
 %type<name> IDENTIFIER CONSTANT func_name type eq_opr
-%type<node> program dio function func_def parameter_list parameter_sub lines line in_scope var_def variables variable expr term assign_statement	
+%type<node> program dio function func_def parameter_list parameter_sub lines line in_scope var_def variables variable expr term assign_statement return_statement	
 %start program
 %%
 program		: program dio{$1->add_child($2);}|
@@ -30,7 +30,7 @@ program		: program dio{$1->add_child($2);}|
 dio		:function{$$ = $1;}|line{$$ = $1;};
 
 function	: func_def'{' in_scope '}'{
-			$$ =$1;$$->right = ($3);scope--;}
+			$$ =$1;$$->right = $3;scope--;}
 		; 
 func_def	: type func_name '(' parameter_list ')'{
 			$$ = new func_n();$$->type = $1;$$->content = $2;$$->left = $4;}
@@ -43,7 +43,7 @@ parameter_list	:parameter_sub{
 		;
 		
 parameter_sub	: parameter_sub ',' type IDENTIFIER{
-			$$ = $1;$1-> add_child(new low_n($3,$4));}|
+			$$ = $1;$1-> add_child(new low_n("IDENTIFIER",$4));}|
 		type IDENTIFIER {
 			$$ = new para_n;$$->content = "parameters";$$ -> add_child(new low_n($1,$2	));}
 		;
@@ -58,7 +58,7 @@ in_scope	: lines {
 		;
 
 
-line		: var_def EOL{$$ = $1;}|assign_statement EOL{$$ = $1;}|flow{$$ = new p_node;};
+line		: var_def EOL{$$ = $1;}|assign_statement EOL{$$ = $1;}|return_statement EOL{$$ = $1;}|flow{$$ = new line_n;};
 
 lines		: lines line{
 			$$ = $1;$1->add_child($2);
@@ -66,8 +66,9 @@ lines		: lines line{
 		line{
 			$$ = new isco_n();$$->add_child($1);$$->content = "in_scope";};
 
-assign_statement: IDENTIFIER eq_opr expr{$$ = new asgn_n($2);$$ ->left =new low_n($1);$$->right = $3;}|IDENTIFIER{$$ = new low_n($1);};
+assign_statement: IDENTIFIER eq_opr expr{$$ = new asgn_n($2);$$ ->left =new low_n("IDENTIFIER",$1);$$->right = $3;}|IDENTIFIER{$$ = new low_n("IDENTIFIER",$1);};
 
+return_statement: RETURN expr{$$ = new retn_n();$$->add_child($2);$$->content = "Return";};
 
 flow		: f_if'('expr')' inner after{scope--;}|
 		f_c inner{scope--;}
@@ -91,18 +92,18 @@ var_def		: type variables {$$ = $2; $2->type = $1;}
 variables	: variables ',' variable{$$ = $1;$1->add_child($3);}|
 		variable{$$ = new vard_n;$$ ->content = "Variable Def";$$->add_child($1);}
 		;
-variable	: IDENTIFIER '=' expr{$$ = new low_n($1);}|
-		IDENTIFIER{$$ = new low_n($1);}
+variable	: IDENTIFIER '=' expr{$$ = new asgn_n($2);$$->left = new low_n("IDENTIFIER",$1);$$->right = $3;}|
+		IDENTIFIER{$$ = new low_n("IDENTIFIER",$1);}
 		;
 //expr for +-*/
-expr		: term '+' expr{$$ = new expr_n($1,$3);$$ -> content = "+";}|
-		term '-' expr{$$ = new expr_n($1,$3);$$ -> content = "-";}|
-		term '*' expr{$$ = new expr_n($1,$3);$$ -> content = "*";}|
-		term '/' expr{$$ = new expr_n($1,$3);$$ -> content = "/";}|
+expr		: term '+' expr{$$ = new addexpr_n($1,$3);}|
+		term '-' expr{$$ = new subexpr_n($1,$3);}|
+		term '*' expr{$$ = new multexpr_n($1,$3);}|
+		term '/' expr{$$ = new divexpr_n($1,$3);}|
 		term{$$ = $1;}
 		;
-term		:IDENTIFIER{$$ = new expr_n($1);$$ -> type = "IDENTIFIER";}|
-		CONSTANT   {$$ = new expr_n($1);$$ -> type = "CONSTANT";}|
+term		:IDENTIFIER{$$ = new low_n("IDENTIFIER",$1);}|
+		CONSTANT   {$$ = new low_n("CONSTANT",$1);}|
 		'('expr')' {$$ = $2;}
 		;
 
@@ -142,6 +143,41 @@ void go_tree(nptr curptr){
 int main(void) {
 	yyparse();
 	head -> content = "Finish";
-	go_tree(head);
+	head->lickdick(0);
 	return 0;
 }
+
+void reassemble(nptr curptr){
+	int i=0;
+	while(i<curptr->child.size() && (curptr->child[i]->content != "Variable Def")) i++;
+	if(i<curptr->child.size()){
+		for(int j=0;j<curptr->child[i]->child.size();j++)
+			if(curptr->child[i]->child[j]->type != "IDENTIFIER"){
+				curptr->child.insert(curptr->child.begin()+i+1,curptr->child[i]->child[j]);
+				curptr->child[i]->child[j] = curptr->child[i]->child[j]->left;
+			}
+		for(int j=i+1;j<curptr->child.size();j++)
+			if(curptr->child[j]->content == "Variable Def"){
+				for(int k=0;k<curptr->child[j]->child.size();k++)
+					if(curptr->child[j]->child[k]->type == "IDENTIFIER")
+						curptr->child[i]->add_child(curptr->child[j]->child[k]);
+					else{
+						curptr->child[i]->add_child(curptr->child[j]->child[k]->left);
+						curptr->child.insert(curptr->child.begin()+j+1,curptr->child[j]->child[k]);
+					}
+				curptr->child.erase(curptr->child.begin()+j);
+				}
+	
+	curptr->left = curptr->child[i];
+		curptr->child.erase(curptr->child.begin()+i);
+	}
+	else{
+		curptr->left = new vard_n;
+		}
+	curptr->right = new line_n;
+	for(i=0;i<curptr->child.size();i++)
+			curptr->right->add_child(curptr->child[i]);
+	curptr->child.clear();
+				
+}
+
