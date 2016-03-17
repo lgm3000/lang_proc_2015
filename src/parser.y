@@ -19,7 +19,7 @@ string spaces(int num);
 
 %token AUTO BREAK CASE CHAR CONST CONTINUE DEFAULT DO DOUBLE ELSE ENUM EXTERN FLOAT FOR GOTO IF INT LONG REGISTER RETURN SHORT SIGNED STATIC STRUCT SWITCH TYPEDEF UNION UNSIGNED VOID VOLATILE WHILE SIZEOF INDEX POINTER PLUSPLUS MINUSMINUS BITWISESHIFTLEFT BITWISESHIFTRIGHT LESSOREQUAL GREATOREQUAL EQUAL NOTEQUAL AND OR MULTEQUAL DIVEQUAL MODEQUAL PLUSEQUAL MINUSEQUAL BSLEQUAL BSREQUAL BANDEQUAL BXOREQUAL BOREQUAL JINGJING EOL
 %token IDENTIFIER CONSTANT STRINGLITERAL
-%type<name> INT VOID '='
+%type<name> INT VOID '=' MULTEQUAL DIVEQUAL PLUSEQUAL MINUSEQUAL
 %type<name> IDENTIFIER CONSTANT func_name type eq_opr
 %type<node> program dio function func_def parameter_list parameter_sub lines line in_scope var_def variables variable expr term assign_statement return_statement	
 %start program
@@ -98,17 +98,17 @@ variable	: IDENTIFIER '=' expr{$$ = new asgn_n($2);$$->left = new low_n("IDENTIF
 //expr for +-*/
 expr		: term '+' expr{$$ = new addexpr_n($1,$3);}|
 		term '-' expr{$$ = new subexpr_n($1,$3);}|
-		term '*' expr{$$ = new multexpr_n($1,$3);}|
-		term '/' expr{$$ = new divexpr_n($1,$3);}|
 		term{$$ = $1;}
 		;
 term		:IDENTIFIER{$$ = new low_n("IDENTIFIER",$1);}|
 		CONSTANT   {$$ = new low_n("CONSTANT",$1);}|
+		term '*' term{$$ = new multexpr_n($1,$3);}|
+		term '/' term{$$ = new divexpr_n($1,$3);}|
 		'('expr')' {$$ = $2;}
 		;
 
-eq_opr		:'='{$$ = $1;};
-//operator	:SIZEOF|INDEX|PLUSPLUS|MINUSMINUS|'&'|'*'|'+'|'-'|'~'|'!'|'/'|'%'|BITWISESHIFTLEFT|BITWISESHIFTRIGHT|'<'|'>'|LESSOREQUAL|GREATOREQUAL|EQUAL|NOTEQUAL|'^'|'|'|AND|OR|','|'#'|JINGJING|';'|':'|MULTEQUAL|DIVEQUAL|MODEQUAL|PLUSEQUAL|MINUSEQUAL|BSLEQUAL|BSREQUAL|BANDEQUAL|BXOREQUAL|BOREQUAL;
+eq_opr		:'='{$$ = $1;}|MULTEQUAL{$$ = $1;}|DIVEQUAL{$$ = $1;}|PLUSEQUAL{$$ = $1;}|MINUSEQUAL{$$ = $1;};
+//operator	:SIZEOF|INDEX|PLUSPLUS|MINUSMINUS|'&'|'*'|'+'|'-'|'~'|'!'|'/'|'%'|BITWISESHIFTLEFT|BITWISESHIFTRIGHT|'<'|'>'|LESSOREQUAL|GREATOREQUAL|EQUAL|NOTEQUAL|'^'|'|'|AND|OR|','|'#'|JINGJING|';'|':'|MULTEQUAL|DIVEQUAL|MODEQUAL|PLUSEQUAL|MINUSEQUAL|BSLEQUAL|BSREQUAL|BANDEQUAL|BXOREQUAL|BOREQUAL|BSLEQUAL|BSREQUAL|BANDEQUAL|BXOREQUAL|MODEQUAL|BOREQUAL;
 func_name	: IDENTIFIER{$$ = $1;scope++;}
 		;
 
@@ -143,7 +143,7 @@ void go_tree(nptr curptr){
 int main(void) {
 	yyparse();
 	head -> content = "Finish";
-	head->lickdick(0);
+	head->traverse(0);
 	return 0;
 }
 

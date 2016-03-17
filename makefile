@@ -2,7 +2,7 @@ bin/c_lexer : src/tokenizer.cpp
 	g++ src/tokenizer.cpp -o bin/c_lexer
 
 bin/c_parser: parser.tab.o lex.yy.o
-	g++ -o bin/c_parser parser.tab.o lex.yy.o
+	g++ -o bin/c_parser parser.tab.o lex.yy.o tree.hpp
 #for parser
 lex.yy.o: lex.yy.c parser.tab.h
 	g++ -c lex.yy.c
